@@ -18,7 +18,6 @@ namespace CryptoChain.Services.Classes
         private List<Block> localChain;
 
 
-
         public BlockChain()
         {
             this.localChain = new List<Block> { Block.Genesis() };
