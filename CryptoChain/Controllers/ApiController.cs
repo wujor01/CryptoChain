@@ -39,6 +39,10 @@ namespace CryptoChain.Controllers
             this._ITransactionPool = transactionPool;
             this._ITransactionMiner = transactionMiner;
         }
+        /// <summary>
+        /// CallAPI: http://127.0.0.1:3001/ping
+        /// </summary>
+        /// <returns></returns>
         [HttpPost, HttpGet]
         [Route("~/ping")]
         public IActionResult ping()
@@ -47,7 +51,11 @@ namespace CryptoChain.Controllers
             _ILogger.LogDebug($"~/ping requested from {HttpContext.GetIP()}");
             return StatusCode(StatusCodes.Status200OK, "pong");
         }
-
+        /// <summary>
+        /// CallAPI: http://127.0.0.1:3001/api/blocks.
+        /// Lấy thông tin các khối đang sở hửu
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("blocks")]
         public IActionResult blocks()
@@ -67,13 +75,18 @@ namespace CryptoChain.Controllers
             }
 
         }
-
+        /// <summary>
+        /// Post lên 1 block rồi lưu vào các blocks hiện tại.
+        /// Có lẽ method này chưa hoàn thiện nên tác giả đã off method này.
+        /// </summary>
+        /// <returns></returns>
         [HttpPost]
         [Route("mine")]
         public async Task<IActionResult> mine()
         {
             try
             {
+                //có post gì lên thì cũng chỉ return về Status405MethodNotAllowed
                 return StatusCode(StatusCodes.Status405MethodNotAllowed);
                 using var reader = new StreamReader(Request.Body);
                 var parsed_body = JsonConvert.DeserializeObject<dynamic>(await reader.ReadToEndAsync());
@@ -140,7 +153,6 @@ namespace CryptoChain.Controllers
             }
 
         }
-
         [HttpGet]
         [Route("transaction-pool")]
         public IActionResult transactionpool()
@@ -160,6 +172,11 @@ namespace CryptoChain.Controllers
             }
 
         }
+        /// <summary>
+        /// http://127.0.0.1:3001/api/wallet-info.
+        /// Thông tin ví
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("wallet-info")]
         public IActionResult walletinfo()
@@ -179,13 +196,20 @@ namespace CryptoChain.Controllers
             }
 
         }
-
+        /// <summary>
+        /// CallAPI: http://127.0.0.1:3001/api/mine-transactions.
+        /// API chính để tạo ra block mới. 
+        /// Cách hoạt động thì đặt Breakpoint ở dưới sau đó:
+        /// nhấn F11 để theo dõi từng bước, F5 để nhảy đới breakpoint tiếp theo.
+        /// </summary>
+        /// <returns></returns>
         [HttpGet]
         [Route("mine-transactions")]
         public async Task<IActionResult> minetransactions()
         {
             try
             { 
+                //Breakpoint ở đây
                 await _ITransactionMiner.MineTransaction();
                 return Redirect("/api/blocks");
             }

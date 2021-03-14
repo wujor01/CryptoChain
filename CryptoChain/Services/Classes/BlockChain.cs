@@ -17,14 +17,16 @@ namespace CryptoChain.Services.Classes
 
         private List<Block> localChain;
 
-
+        
         public BlockChain()
         {
             this.localChain = new List<Block> { Block.Genesis() };
 
             SyncChain();
         }
-
+        /// <summary>
+        /// Sync lại dữ liệu khi start
+        /// </summary>
         private void SyncChain()
         {
             using var webClient = new WebClient();
